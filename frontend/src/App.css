@@ -1,0 +1,478 @@
+/* ========================================
+   GLOBAL
+======================================== */
+
+body {
+  background-color: #faf7fb;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.page {
+  padding: 40px;
+}
+
+input,
+button,
+.event-card {
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ========================================
+   NAVBAR
+======================================== */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8dff4;
+  padding: 16px 24px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+}
+
+.logo {
+  font-size: 2rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #444;
+  font-weight: bold;
+}
+
+
+/* ========================================
+   HOME PAGE
+======================================== */
+
+.hero {
+  text-align: center;
+  padding: 60px 20px;
+  margin-bottom: 40px;
+  background-color: #fce7f3;
+  border-radius: 24px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.hero input {
+  width: 350px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+
+/* ========================================
+   EVENTS PAGE
+======================================== */
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.event-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+.event-card h3 {
+  margin-bottom: 10px;
+}
+
+.event-card p {
+  color: #666;
+}
+
+.event-badge {
+  display: inline-block;
+  background-color: #ede9fe;
+  color: #6d28d9;
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.price {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #8b5cf6;
+}
+
+.book-btn {
+  margin-top: 16px;
+  width: 100%;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #c4b5fd;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.book-btn:hover {
+  opacity: 0.9;
+}
+
+
+/* ========================================
+   REGISTER PAGE
+======================================== */
+
+.register-container {
+  max-width: 550px;
+  margin: 60px auto;
+  background: white;
+  padding: 35px;
+  border-radius: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.register-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.7rem;
+  color: #222;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-form input {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.register-form input:focus {
+  outline: none;
+  border-color: #c4b5fd;
+  box-shadow: 0 0 0 3px rgba(196,181,253,0.3);
+}
+
+.register-form input::placeholder {
+  color: #999;
+}
+
+.register-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 12px;
+  background-color: #c4b5fd;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.role-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.role-section label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 45px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.password-container button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.success-message {
+  color: #16a34a;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ========================================
+   LOGIN PAGE
+======================================== */
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.remember-me input {
+  width: 18px;
+  height: 18px;
+}
+
+.forgot-password {
+  color: #7c3aed;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   AUTH SHARED
+======================================== */
+
+.auth-switch {
+  text-align: center;
+  margin-top: 15px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.auth-switch a {
+  color: #7c3aed;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   ORGANIZER DASHBOARD
+======================================== */
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.stat-card h3 {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.stat-card p {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #8b5cf6;
+}
+
+.create-event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.delete-btn {
+  width: 100%;
+  margin-top: auto;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #fecaca;
+  color: #991b1b;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.delete-btn:hover {
+  background-color: #fca5a5;
+}
+
+.event-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.event-card p {
+  word-break: break-word;
+}
+
+.stats-container + .register-btn {
+  width: auto;
+  padding: 14px 24px;
+  margin-bottom: 30px;
+}
+
+.event-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 72px;
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.edit-btn {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #ddd6fe;
+  color: #5b21b6;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.edit-btn:hover {
+  background-color: #c4b5fd;
+}
+
+/* ========================================
+   CREATE EVENT FORM
+======================================== */
+
+.register-form textarea,
+.register-form select {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.register-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* ========================================
+   EVENT DETAILS PAGE
+======================================== */
+
+.quantity-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.quantity-selector button {
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 10px;
+  background-color: #c4b5fd;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.quantity-selector button:hover {
+  opacity: 0.9;
+}
+
+.quantity-selector span {
+  font-size: 1.5rem;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+.booking-info {
+  text-align: center;
+  color: #666;
+  margin-bottom: 15px;
+}
