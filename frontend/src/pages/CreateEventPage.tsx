@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 function CreateEventPage() {
@@ -9,17 +9,21 @@ function CreateEventPage() {
   useEffect(() => {
     if (!id) return;
 
-    const events = JSON.parse(
-      localStorage.getItem("events") || "[]"
-    );
+    fetch("http://localhost:8000/events")
+      .then((response) =>
+        response.json()
+      )
+      .then((events) => {
+        const eventToEdit =
+          events.find(
+            (event: any) =>
+              event.id === Number(id)
+          );
 
-    const eventToEdit = events.find(
-      (event: any) => event.id === Number(id)
-    );
-
-    if (eventToEdit) {
-      setEventData(eventToEdit);
-    }
+        if (eventToEdit) {
+          setEventData(eventToEdit);
+        }
+      });
   }, [id]);
 
   const [eventData, setEventData] = useState({
@@ -36,86 +40,93 @@ function CreateEventPage() {
     capacity: "",
   });
 
-  const handleCreateEvent = () => {
-    if (
-      !eventData.title ||
-      !eventData.description ||
-      !eventData.category ||
-      !eventData.venue ||
-      !eventData.date ||
-      !eventData.time ||
-      !eventData.age ||
-      !eventData.price ||
-      !eventData.image
-    ) {
-      alert("Please fill all fields");
-      return;
-    }
+  const handleCreateEvent = async () => {
+  if (
+    !eventData.title ||
+    !eventData.description ||
+    !eventData.category ||
+    !eventData.venue ||
+    !eventData.date ||
+    !eventData.time ||
+    !eventData.age ||
+    !eventData.price ||
+    !eventData.image
+  ) {
+    alert("Please fill all fields");
+    return;
+  }
 
-    const existingEvents = JSON.parse(
-      localStorage.getItem("events") || "[]"
+  try {
+    const response = await fetch(
+      id
+        ? `http://localhost:8000/events/${id}`
+        : "http://localhost:8000/events",
+      {
+        method: id ? "PUT" : "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          title: eventData.title,
+
+          description: eventData.description,
+
+          category:
+            eventData.category === "Other"
+              ? eventData.otherCategory
+              : eventData.category,
+
+          venue: eventData.venue,
+
+          date: eventData.date,
+
+          time: eventData.time,
+
+          age: Number(eventData.age),
+
+          price: Number(eventData.price),
+
+          image: eventData.image,
+
+          capacity: Number(eventData.capacity),
+        }),
+      }
     );
 
-    if (id) {
-      const updatedEvents = existingEvents.map(
-        (event: any) =>
-          event.id === Number(id)
-            ? {
-                ...eventData,
-                id: Number(id),
-                price: Number(eventData.price),
-                age: Number(eventData.age),
-                capacity: Number(eventData.capacity),
-                ticketsSold:
-                  event.ticketsSold || 0,
-              }
-            : event
-      );
+    const data = await response.json();
 
-      localStorage.setItem(
-        "events",
-        JSON.stringify(updatedEvents)
-      );
+    console.log(data);
 
-      alert("Event Updated Successfully!");
-    } else {
-      const newEvent = {
-        id: Date.now(),
-
-        ...eventData,
-
-        category:
-          eventData.category === "Other"
-            ? eventData.otherCategory
-            : eventData.category,
-
-        price: Number(eventData.price),
-
-        age: Number(eventData.age),
-
-        capacity: Number(eventData.capacity),
-
-        ticketsSold: 0,
-      };
-
-      localStorage.setItem(
-        "events",
-        JSON.stringify([
-          ...existingEvents,
-          newEvent,
-        ])
-      );
-    }
+    alert(
+      id
+        ? "Event Updated Successfully!"
+        : "Event Created Successfully!"
+    );
 
     navigate("/dashboard");
-  };
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      id
+        ? "Failed to update event"
+        : "Failed to create event"
+    );
+  }
+};
 
   return (
     <div className="page">
       <Navbar />
 
       <div className="register-container">
-        <h1>Create Event</h1>
+        <h1>
+          {id
+            ? "Edit Event"
+            : "Create Event"}
+        </h1>
 
         <div className="register-form">
           <input

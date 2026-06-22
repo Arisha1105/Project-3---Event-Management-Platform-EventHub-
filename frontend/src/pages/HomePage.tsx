@@ -8,11 +8,16 @@ function HomePage() {
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
-    const storedEvents = JSON.parse(
-      localStorage.getItem("events") || "[]"
-    );
-
-    setEvents(storedEvents);
+    fetch("http://localhost:8000/events")
+      .then((response) =>
+        response.json()
+      )
+      .then((data) => {
+        setEvents(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   const filteredEvents = events.filter((event) =>

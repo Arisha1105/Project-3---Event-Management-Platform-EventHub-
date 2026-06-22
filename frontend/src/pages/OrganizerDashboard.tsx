@@ -8,12 +8,18 @@ function OrganizerDashboard() {
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
-    const storedEvents = JSON.parse(
-      localStorage.getItem("events") || "[]"
-    );
-
-    setEvents(storedEvents);
-  }, []);
+    fetch("http://localhost:8000/events")
+      .then((response) =>
+        response.json()
+      )
+      .then((data) => {
+        setEvents(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, 
+  []);
 
   const totalTicketsSold = events.reduce(
     (sum, event) =>
@@ -35,19 +41,34 @@ function OrganizerDashboard() {
     revenue: totalRevenue,
   };
 
-  const handleDeleteEvent = (
-    indexToDelete: number
+  const handleDeleteEvent = async (
+    eventId: number
   ) => {
-    const updatedEvents = events.filter(
-      (_, index) => index !== indexToDelete
-    );
+    try {
+      await fetch(
+        `http://localhost:8000/events/${eventId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    setEvents(updatedEvents);
+      setEvents(
+        events.filter(
+          (event) =>
+            event.id !== eventId
+        )
+      );
 
-    localStorage.setItem(
-      "events",
-      JSON.stringify(updatedEvents)
-    );
+      alert(
+        "Event deleted successfully!"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Failed to delete event"
+      );
+    }
   };
 
   return (
@@ -164,7 +185,7 @@ function OrganizerDashboard() {
                     );
 
                   if (confirmDelete) {
-                    handleDeleteEvent(index);
+                    handleDeleteEvent(event.id);
                   }
                 }}
               >
