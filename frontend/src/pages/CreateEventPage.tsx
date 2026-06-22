@@ -20,9 +20,24 @@ function CreateEventPage() {
               event.id === Number(id)
           );
 
-        if (eventToEdit) {
-          setEventData(eventToEdit);
-        }
+          if (eventToEdit) {
+            setEventData({
+              ...eventToEdit,
+
+              date: eventToEdit.date
+                ? new Date(eventToEdit.date)
+                    .toISOString()
+                    .split("T")[0]
+                : "",
+
+              time: eventToEdit.time
+                ? String(eventToEdit.time).slice(
+                    0,
+                    5
+                  )
+                : "",
+            });
+          }
       });
   }, [id]);
 
@@ -96,7 +111,7 @@ function CreateEventPage() {
     );
 
     const data = await response.json();
-
+console.log("Response:", data);
     console.log(data);
 
     alert(
