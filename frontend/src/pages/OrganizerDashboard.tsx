@@ -5,7 +5,25 @@ import Navbar from "../components/Navbar";
 function OrganizerDashboard() {
   const navigate = useNavigate();
 
+  const user = JSON.parse(
+    localStorage.getItem("user") || "null"
+ );
+
+  useEffect(() => {
+    const user = JSON.parse(
+      localStorage.getItem("user") || "null"
+    );
+
+    if (
+      !user ||
+      user.role !== "organizer"
+    ) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const [events, setEvents] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:8000/events")
@@ -18,7 +36,16 @@ function OrganizerDashboard() {
       .catch((error) => {
         console.error(error);
       });
-  }, 
+  
+      fetch("http://localhost:8000/bookings")
+        .then((response) =>
+          response.json()
+        )
+        .then((data) => {
+          setBookings(data);
+        });
+
+    }, 
   []);
 
   const totalTicketsSold = events.reduce(
@@ -75,7 +102,12 @@ function OrganizerDashboard() {
     <div className="page">
       <Navbar />
 
-      <h1>Welcome, Organizer 👋</h1>
+    <h1>
+        Welcome, {user?.name} 👋
+    </h1>
+    <p>
+      Manage your events and bookings
+    </p>
 
       <div className="stats-container">
         <div className="stat-card">
@@ -195,6 +227,33 @@ function OrganizerDashboard() {
           ))}
         </div>
       )}
+
+        <h2>Recent Bookings</h2>
+
+          {bookings.map((booking) => (
+            <div
+              key={booking.id}
+              className="event-card"
+            >
+              <h3>{booking.eventTitle}</h3>
+
+              <p>
+                👤 {booking.userName}
+              </p>
+
+              <p>
+                📧 {booking.userEmail}
+              </p>
+
+              <p>
+                🎟️ {booking.quantity} Ticket(s)
+              </p>
+
+              <p>
+                ₹{booking.totalPrice}
+              </p>
+            </div>
+          ))}
     </div>
   );
 }

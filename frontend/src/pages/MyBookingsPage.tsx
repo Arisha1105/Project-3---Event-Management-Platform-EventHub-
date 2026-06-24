@@ -5,15 +5,68 @@ function MyBookingsPage() {
   const [bookings, setBookings] =
     useState<any[]>([]);
 
-  useEffect(() => {
-    const storedBookings =
-      JSON.parse(
-        localStorage.getItem(
-          "bookings"
-        ) || "[]"
+  const handleCancelBooking = async (
+    booking: any
+  ) => {
+    const confirmCancel =
+      window.confirm(
+        "Cancel this booking?"
       );
 
-    setBookings(storedBookings);
+    if (!confirmCancel) return;
+
+    try {
+
+      await fetch(
+        `http://localhost:8000/events/${booking.eventId}/cancel-tickets`,
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            quantity:
+              booking.quantity,
+          }),
+        }
+      );
+
+      await fetch(
+        `http://localhost:8000/bookings/${booking.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      setBookings(
+        bookings.filter(
+          (b) => b.id !== booking.id
+        )
+      );
+
+      alert(
+        "Booking cancelled"
+      );
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+    
+  useEffect(() => {
+    fetch("http://localhost:8000/bookings")
+      .then((response) =>
+        response.json()
+      )
+      .then((data) => {
+        setBookings(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   return (
@@ -34,15 +87,10 @@ function MyBookingsPage() {
                 className="event-card"
                 key={booking.id}
               >
-                <img
-                  src={
-                    booking.eventImage
-                  }
-                  alt={
-                    booking.eventTitle
-                  }
-                  className="event-image"
-                />
+
+              <div className="event-image-placeholder">
+                🎟️ Event Booking
+              </div>
 
                 <h3>
                   {
@@ -62,7 +110,7 @@ function MyBookingsPage() {
                   💰 Amount:
                   ₹
                   {
-                    booking.totalAmount
+                    booking.totalPrice
                   }
                 </p>
 
@@ -70,13 +118,25 @@ function MyBookingsPage() {
                   📅 Booked On:
                   {" "}
                   {
-                    booking.bookingDate
+                      new Date(
+                        booking.bookingDate
+                      ).toLocaleDateString()
                   }
                 </p>
 
                 <p>
                   ✅ Confirmed
                 </p>
+
+                <button
+                  className="delete-btn"
+                  onClick={() =>
+                    handleCancelBooking(booking)
+                  }
+                >
+                  Cancel Booking
+                </button>
+
               </div>
             )
           )}

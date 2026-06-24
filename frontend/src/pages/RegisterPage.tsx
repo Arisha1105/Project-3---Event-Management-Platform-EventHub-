@@ -2,9 +2,10 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function RegisterPage() {
+    const navigate = useNavigate();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -18,7 +19,7 @@ function RegisterPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [success, setSuccess] = useState("");
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
         if (name.trim() === "") {
@@ -74,19 +75,63 @@ function RegisterPage() {
             return;
         }
 
+        try {
+            const response = await fetch(
+            "http://localhost:8000/register",
+            {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+                name,
+                email,
+                phone,
+                dob,
+                password,
+                role:
+                    role === "Organizer"
+                        ? "organizer"
+                        : "user",
+                organizationName,
+            }),
+            }
+        );
+
+            const data =
+                await response.json();
+
+            // console.log(data);
+
+            if (!response.ok) {
+                setSuccess("");
+                setError(data.message);
+            return;
+}
+
             setError("");
 
-            setSuccess("Account created successfully!");
+            setSuccess(
+                "Account created successfully!"
+            );
 
-            setName("");
-            setEmail("");
-            setPhone("");
-            setDob("");
-            setPassword("");
-            setConfirmPassword("");
-            setRole("");
-            setOrganizationName("");
-    };
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+
+            } catch (error) {
+            console.error(error);
+
+            setSuccess("");
+
+            setError(
+                "Registration failed"
+            );
+            }
+        };
 
     return (
     <div className="page">
@@ -133,8 +178,12 @@ function RegisterPage() {
           />
 
           <input
-            type="date"
+            type={dob ? "date" : "text"}
+            placeholder="Date of Birth"
             value={dob}
+            onFocus={(e) => {
+                e.target.type = "date";
+            }}
             onChange={(e) => setDob(e.target.value)}
           />
 

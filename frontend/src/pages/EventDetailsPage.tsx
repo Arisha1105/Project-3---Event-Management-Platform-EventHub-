@@ -13,18 +13,20 @@ function EventDetailsPage() {
   const [showBooking, setShowBooking] =
     useState(false);
 
-  useEffect(() => {
-    const events = JSON.parse(
-      localStorage.getItem("events") || "[]"
-    );
+    useEffect(() => {
+      fetch("http://localhost:8000/events")
+        .then((response) =>
+          response.json()
+        )
+        .then((events) => {
+          const foundEvent = events.find(
+            (event: any) =>
+              String(event.id) === String(id)
+          );
 
-    const foundEvent = events.find(
-      (event: any) =>
-        String(event.id) === String(id)
-    );
-
-    setEvent(foundEvent);
-  }, [id]);
+          setEvent(foundEvent);
+        });
+    }, [id]);
 
   if (!event) {
     return (
@@ -41,7 +43,22 @@ function EventDetailsPage() {
   const totalPrice =
     quantity * event.price;
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
+
+    const user = JSON.parse(
+      localStorage.getItem("user") || "null"
+    );
+
+    if (!user) {
+      alert(
+        "Please login to book tickets"
+      );
+
+      navigate("/login");
+
+      return;
+    }
+
     if (quantity > remainingSeats) {
       alert(
         "Not enough seats available"
@@ -53,68 +70,63 @@ function EventDetailsPage() {
       window.confirm(
         `You are booking ${quantity} ticket(s)
 
-Total Price: ₹${totalPrice}
+  Total Price: ₹${totalPrice}
 
-Confirm Booking?`
-      );
+  Confirm Booking?`
+        );
 
-    if (!confirmBooking) {
-      return;
-    }
+      if (!confirmBooking) {
+        return;
+      }
 
-    const events = JSON.parse(
-      localStorage.getItem("events") || "[]"
+  try {
+    await fetch(
+      "http://localhost:8000/bookings",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          eventId: event.id,
+          eventTitle: event.title,
+          quantity,
+          totalPrice,
+          userName: user.name,
+          userEmail: user.email,
+        }),
+      }
     );
 
-    const updatedEvents = events.map(
-      (currentEvent: any) =>
-        currentEvent.id === event.id
-          ? {
-              ...currentEvent,
-              ticketsSold:
-                currentEvent.ticketsSold +
-                quantity,
-            }
-          : currentEvent
-    );
+    await fetch(
+      `http://localhost:8000/events/${event.id}/tickets`,
+      {
+        method: "PUT",
 
-    localStorage.setItem(
-      "events",
-      JSON.stringify(updatedEvents)
-    );
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-    const existingBookings = JSON.parse(
-      localStorage.getItem("bookings") || "[]"
-    );
-
-    const newBooking = {
-      id: Date.now(),
-
-      eventTitle: event.title,
-
-      quantity,
-
-      totalAmount: totalPrice,
-
-      bookingDate:
-        new Date().toLocaleDateString(),
-
-      eventImage: event.image,
-    };
-
-    localStorage.setItem(
-      "bookings",
-      JSON.stringify([
-        ...existingBookings,
-        newBooking,
-      ])
+        body: JSON.stringify({
+          quantity,
+        }),
+      }
     );
 
     alert(
       "Tickets booked successfully!"
     );
 
-    navigate("/events");
+    navigate("/my-bookings");
+  } catch (error) {
+    console.error(error);
+
+    alert("Booking failed");
+  }
   };
 
   return (

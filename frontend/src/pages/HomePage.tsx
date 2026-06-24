@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import EventCard from "../components/EventCard";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const [search, setSearch] = useState("");
-
+  const navigate = useNavigate();
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
@@ -48,10 +49,14 @@ function HomePage() {
 
       <div className="events-grid">
         {filteredEvents.map((event) => (
-          <div
-            className="event-card"
-            key={event.id}
-          >
+            <div
+            
+              className="event-card"
+              key={event.id}
+              onClick={() =>
+                navigate(`/events/${event.id}`)
+              }
+            >
             <img
               src={event.image}
               alt={event.title}

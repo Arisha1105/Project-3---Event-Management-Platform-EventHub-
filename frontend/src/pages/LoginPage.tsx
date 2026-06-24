@@ -2,9 +2,10 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -12,7 +13,7 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (email.trim() === "") {
@@ -32,10 +33,69 @@ function LoginPage() {
       setError("Password is required");
       return;
     }
+    
+    try {
+      const response = await fetch(
+        "http://localhost:8000/login",
+        {
+          method: "POST",
 
-    setError("");
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-    setSuccess("Login successful!");
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
+
+      const data =
+        await response.json();
+
+      if (!response.ok) {
+        setSuccess("");
+
+        setError(
+          data.message
+        );
+
+        return;
+      }
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
+      setError("");
+
+      setSuccess(
+        "Login successful!"
+      );
+
+      setTimeout(() => {
+        if (
+          data.user.role ===
+          "organizer"
+        ) {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 1000);
+
+    } catch (error) {
+      console.error(error);
+
+      setSuccess("");
+
+      setError(
+        "Login failed"
+      );
+    }
   };
 
   return (

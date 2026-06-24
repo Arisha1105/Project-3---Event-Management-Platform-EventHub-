@@ -7,13 +7,43 @@ function EventsPage() {
 
   const [events, setEvents] = useState<any[]>([]);
 
-  useEffect(() => {
-    const storedEvents = JSON.parse(
-      localStorage.getItem("events") || "[]"
-    );
+    useEffect(() => {
+      fetch("http://localhost:8000/events")
+        .then((response) =>
+          response.json()
+        )
+        .then((data) => {
+          setEvents(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, []);
 
-    setEvents(storedEvents);
-  }, []);
+  const [search, setSearch] =
+    useState("");
+
+  const [category, setCategory] =
+    useState("All");
+
+  const filteredEvents =
+    events.filter((event) => {
+      const matchesSearch =
+        event.title
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          );
+
+      const matchesCategory =
+        category === "All" ||
+        event.category === category;
+
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
+    });
 
   return (
     <div className="page">
@@ -27,8 +57,48 @@ function EventsPage() {
         </p>
       </div>
 
+      <input
+        type="text"
+        placeholder="Search events..."
+        value={search}
+        onChange={(e) =>
+          setSearch(e.target.value)
+        }
+      />
+
+      <select
+          value={category}
+          onChange={(e) =>
+            setCategory(e.target.value)
+          }
+        >
+          <option value="All">
+            All Categories
+          </option>
+
+          <option value="Workshop">
+            Workshop
+          </option>
+
+          <option value="Hackathon">
+            Hackathon
+          </option>
+
+          <option value="Music">
+            Music
+          </option>
+
+          <option value="Conference">
+            Conference
+          </option>
+
+          <option value="Sports">
+            Sports
+          </option>
+      </select>
+
       <div className="events-grid">
-        {events.map((event) => (
+        {filteredEvents.map((event) => (
           <div
             className="event-card"
             key={event.id}

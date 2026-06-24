@@ -7,6 +7,19 @@ function CreateEventPage() {
   const { id } = useParams();
 
   useEffect(() => {
+    const user = JSON.parse(
+      localStorage.getItem("user") || "null"
+    );
+
+    if (
+      !user ||
+      user.role !== "organizer"
+    ) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     if (!id) return;
 
     fetch("http://localhost:8000/events")
@@ -111,8 +124,8 @@ function CreateEventPage() {
     );
 
     const data = await response.json();
-console.log("Response:", data);
-    console.log(data);
+// console.log("Response:", data);
+//     console.log(data);
 
     alert(
       id
